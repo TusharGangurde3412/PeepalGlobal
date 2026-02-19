@@ -26,3 +26,7 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Angular cache
+.angular/
+frontend/.angular/
