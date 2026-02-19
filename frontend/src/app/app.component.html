@@ -1,0 +1,33 @@
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-brand">
+      <a routerLink="/" class="logo">
+        <span class="logo-badge">
+          <img src="assets/logo.jpeg" alt="Peepal Global Export Import" class="logo-img">
+        </span>
+        <span class="logo-text">
+          <strong>PEEPAL GLOBAL</strong>
+          <small>EXPORT IMPORT</small>
+        </span>
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a></li>
+      <li><a routerLink="/about" routerLinkActive="active">About Us</a></li>
+      <li><a routerLink="/products" routerLinkActive="active">Industries</a></li>
+      <li><a routerLink="/contact" routerLinkActive="active">Contact Us</a></li>
+      <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
+      <li><a routerLink="/quote" routerLinkActive="active" class="btn-quote">Request a Quote</a></li>
+      <li *ngIf="!isLoggedIn"><a routerLink="/login" routerLinkActive="active">Login</a></li>
+      <li *ngIf="isLoggedIn"><a (click)="logout()" class="btn-logout">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>
+
+<footer class="footer">
+  <div class="container">
+    <p>&copy; 2026 Peepal Export. All rights reserved.</p>
+  </div>
+</footer>

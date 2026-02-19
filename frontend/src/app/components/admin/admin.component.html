@@ -1,0 +1,132 @@
+<div class="admin-container">
+  <div class="container">
+    <div class="admin-header">
+      <h1>Admin Panel</h1>
+      <p>Manage products and monitor inquiries/contact requests.</p>
+    </div>
+
+    <div class="tab-bar">
+      <button (click)="setTab('products')" [class.active]="activeTab === 'products'">Products</button>
+      <button (click)="setTab('inquiries')" [class.active]="activeTab === 'inquiries'">Inquiries</button>
+      <button (click)="setTab('contacts')" [class.active]="activeTab === 'contacts'">Contacts</button>
+    </div>
+
+    <div class="status success" *ngIf="success">{{ success }}</div>
+    <div class="status error" *ngIf="error">{{ error }}</div>
+
+    <section *ngIf="activeTab === 'products'" class="panel">
+      <div class="grid">
+        <form class="product-form" (ngSubmit)="submitProduct()">
+          <h3>{{ formMode === 'edit' ? 'Edit Product' : 'Add Product' }}</h3>
+
+          <label>Name</label>
+          <input type="text" [(ngModel)]="productForm.name" name="name" required />
+
+          <label>Description</label>
+          <textarea rows="4" [(ngModel)]="productForm.description" name="description"></textarea>
+
+          <label>Category</label>
+          <select [(ngModel)]="productForm.category" name="category" required>
+            <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          </select>
+
+          <label>Price</label>
+          <input type="number" min="0" [(ngModel)]="productForm.price" name="price" />
+
+          <label>Image URL</label>
+          <input type="text" [(ngModel)]="productForm.image" name="image" />
+
+          <div class="check-row">
+            <label><input type="checkbox" [(ngModel)]="productForm.featured" name="featured" /> Featured</label>
+            <label><input type="checkbox" [(ngModel)]="productForm.inStock" name="inStock" /> In Stock</label>
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" class="btn-primary">{{ formMode === 'edit' ? 'Update Product' : 'Add Product' }}</button>
+            <button type="button" class="btn-secondary" (click)="resetForm()" *ngIf="formMode === 'edit'">Cancel Edit</button>
+          </div>
+        </form>
+
+        <div class="products-list">
+          <h3>Product List</h3>
+          <div *ngIf="loadingProducts" class="loading">Loading products...</div>
+          <table *ngIf="!loadingProducts">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of products">
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.price ? ('$' + product.price) : '-' }}</td>
+                <td class="actions">
+                  <button class="btn-mini edit" (click)="editProduct(product)">Edit</button>
+                  <button class="btn-mini delete" (click)="deleteProduct(product._id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'inquiries'" class="panel">
+      <h3>Inquiry Requests</h3>
+      <div *ngIf="loadingInquiries" class="loading">Loading inquiries...</div>
+      <table *ngIf="!loadingInquiries">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inquiry of inquiries">
+            <td>{{ inquiry.name }}</td>
+            <td>{{ inquiry.email }}</td>
+            <td>{{ inquiry.phone }}</td>
+            <td>{{ inquiry.quantity }}</td>
+            <td>{{ inquiry.status }}</td>
+            <td>{{ inquiry.message || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section *ngIf="activeTab === 'contacts'" class="panel">
+      <h3>Contact Requests</h3>
+      <div *ngIf="loadingContacts" class="loading">Loading contact requests...</div>
+      <table *ngIf="!loadingContacts">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Category</th>
+            <th>Subject</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let contact of contacts">
+            <td>{{ contact.firstName }} {{ contact.lastName }}</td>
+            <td>{{ contact.email }}</td>
+            <td>{{ contact.phone || '-' }}</td>
+            <td>{{ contact.category }}</td>
+            <td>{{ contact.subject }}</td>
+            <td>{{ contact.message }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>

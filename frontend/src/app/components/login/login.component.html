@@ -1,0 +1,24 @@
+<section class="login-page">
+  <div class="container">
+    <div class="login-card">
+      <h1>Admin Login</h1>
+      <p>Sign in to access the admin panel.</p>
+
+      <div *ngIf="error" class="error-message">{{ error }}</div>
+
+      <form (ngSubmit)="submit()">
+        <label for="email">Email</label>
+        <input id="email" type="email" [(ngModel)]="form.email" name="email" required />
+
+        <label for="password">Password</label>
+        <input id="password" type="password" [(ngModel)]="form.password" name="password" required />
+
+        <button type="submit" [disabled]="submitting">
+          {{ submitting ? 'Signing in...' : 'Login' }}
+        </button>
+      </form>
+
+      <a routerLink="/" class="back-link">Back to Home</a>
+    </div>
+  </div>
+</section>

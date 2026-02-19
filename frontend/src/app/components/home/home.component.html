@@ -1,0 +1,94 @@
+<section class="hero">
+  <div class="hero-content">
+    <h1>Your <span class="highlight">Trusted</span> Import Export <span class="highlight-blue">Partner</span></h1>
+    <p>Connecting Businesses Across the Globe</p>
+    <button class="btn-primary" routerLink="/products">Explore Our Services</button>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <div class="orb orb-main"></div>
+    <div class="orb orb-soft"></div>
+    <div class="shipment-card">
+      <h4>Active Trade Lanes</h4>
+      <p>Asia - Middle East - Europe - Africa</p>
+    </div>
+    <div class="shipment-card secondary">
+      <h4>On-Time Dispatch</h4>
+      <p>Reliable documentation and delivery windows</p>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon-globe"></i>
+        </div>
+        <h3>Global Sourcing</h3>
+        <p>Trusted supplier network across regions to secure quality products at the right price.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon-logistics"></i>
+        </div>
+        <h3>Reliable Logistics</h3>
+        <p>Coordinated sea, air, and land movement with predictable timelines and tracking support.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon-quality"></i>
+        </div>
+        <h3>Quality Assurance</h3>
+        <p>Pre-dispatch checks, compliance documentation, and standards-focused quality control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about-preview">
+  <div class="container">
+    <div class="about-content">
+      <div class="about-text">
+        <h2>About <span class="highlight">Peepal Export</span></h2>
+        <p class="subtitle">Expert Global Trading Solutions</p>
+        <ul class="about-list">
+          <li><i class="icon-check"></i> 10+ Years of Experience</li>
+          <li><i class="icon-check"></i> Worldwide Network</li>
+          <li><i class="icon-check"></i> Certified & Trusted</li>
+        </ul>
+        <button class="btn-primary" routerLink="/about">Learn More</button>
+      </div>
+      <div class="about-visual" aria-hidden="true">
+        <div class="metric-card">
+          <span class="metric-value">50+</span>
+          <span class="metric-label">Countries Served</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-value">24/7</span>
+          <span class="metric-label">Sales Support</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-value">98%</span>
+          <span class="metric-label">Client Retention</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="products-preview">
+  <div class="container">
+    <div class="section-header">
+      <h2>Our <span class="highlight">Products</span></h2>
+      <a routerLink="/products" class="view-all">View All Products</a>
+    </div>
+    <div class="products-grid" *ngIf="!loading">
+      <div class="product-card" *ngFor="let product of featuredProducts | slice:0:3">
+        <img [src]="product.image" [alt]="product.name" class="product-image">
+        <h3>{{ product.category }}</h3>
+      </div>
+    </div>
+    <div *ngIf="loading" class="loading">Loading products...</div>
+  </div>
+</section>

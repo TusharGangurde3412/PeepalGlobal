@@ -1,0 +1,196 @@
+.admin-container {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: linear-gradient(180deg, #f3f8f5, #edf3ef);
+
+  .admin-header {
+    margin-bottom: 18px;
+
+    h1 {
+      margin-bottom: 6px;
+      color: #1f4734;
+    }
+
+    p {
+      color: #5a7364;
+    }
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    button {
+      border: 1px solid #cadfd1;
+      background: #fff;
+      color: #28503d;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+
+      &.active {
+        background: #2f8d58;
+        border-color: #2f8d58;
+        color: #fff;
+      }
+    }
+  }
+
+  .panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #d8e7dd;
+    box-shadow: 0 8px 24px rgba(20, 53, 36, 0.08);
+    padding: 20px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .product-form {
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+      margin-bottom: 14px;
+      color: #234c38;
+    }
+
+    label {
+      margin-bottom: 6px;
+      color: #3f5d4f;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    input,
+    textarea,
+    select {
+      margin-bottom: 12px;
+      border: 1px solid #cfe0d5;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+
+      &:focus {
+        outline: none;
+        border-color: #3f9965;
+        box-shadow: 0 0 0 3px rgba(63, 153, 101, 0.15);
+      }
+    }
+
+    .check-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      color: #3a5e4d;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  .products-list h3,
+  .panel h3 {
+    margin-bottom: 12px;
+    color: #234c38;
+  }
+
+  .status {
+    margin-bottom: 12px;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    border: 1px solid transparent;
+  }
+
+  .status.success {
+    background: #def3e4;
+    border-color: #c1e6cb;
+    color: #1c6338;
+  }
+
+  .status.error {
+    background: #f8dfe4;
+    border-color: #f1c2cd;
+    color: #7d2230;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+
+    th,
+    td {
+      border-bottom: 1px solid #e5eee9;
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #2f5a44;
+      background: #f4faf6;
+      font-weight: 700;
+    }
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-mini {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: #2f8d58;
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background: #e9f4ed;
+    color: #1f5b3d;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-mini {
+    padding: 6px 9px;
+    font-size: 0.82rem;
+  }
+
+  .btn-mini.edit {
+    background: #e6f1ff;
+    color: #245f9d;
+  }
+
+  .btn-mini.delete {
+    background: #ffe8ea;
+    color: #9e2738;
+  }
+
+  .loading {
+    color: #6a8476;
+    padding: 10px 0;
+  }
+}
+
+@media (max-width: 1000px) {
+  .admin-container .grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,72 @@
+<div class="products-container">
+  <div class="container">
+    <h1>Our Industries</h1>
+
+    <div class="products-wrapper">
+      <div class="sidebar">
+        <div class="filter-section">
+          <h3>Categories</h3>
+          <ul class="category-list">
+            <li>
+              <a (click)="onCategoryChange('')" [class.active]="!selectedCategory">
+                All Categories
+              </a>
+            </li>
+            <li *ngFor="let category of categories">
+              <a (click)="onCategoryChange(category)" [class.active]="selectedCategory === category">
+                {{ category }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="products-content">
+        <div class="search-box">
+          <input 
+            type="text" 
+            placeholder="Search products..." 
+            [value]="searchTerm"
+            (input)="onSearch($event)"
+          >
+        </div>
+
+        <div class="products-grid" *ngIf="!loading && products.length > 0">
+          <div class="product-card" *ngFor="let product of products">
+            <img [src]="product.image" [alt]="product.name" class="product-image">
+            <div class="product-info">
+              <h3>{{ product.name }}</h3>
+              <p class="category">{{ product.category }}</p>
+              <p class="description">{{ product.description }}</p>
+              <div class="product-footer">
+                <span class="price" *ngIf="product.price">${{ product.price }}</span>
+                <button class="btn-inquiry" routerLink="/quote" [queryParams]="{ productId: product._id }">
+                  Inquire Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!loading && products.length === 0" class="no-products">
+          <p>No products found. Try a different search or category.</p>
+        </div>
+
+        <div *ngIf="loading" class="loading">
+          <p>Loading products...</p>
+        </div>
+
+        <div *ngIf="!loading && totalPages > 1" class="pagination">
+          <button 
+            *ngFor="let p of pages" 
+            (click)="goToPage(p)" 
+            [class.active]="page === p"
+            class="page-btn"
+          >
+            {{ p }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
