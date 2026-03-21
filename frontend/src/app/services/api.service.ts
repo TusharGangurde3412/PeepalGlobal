@@ -74,6 +74,11 @@ export class ApiService {
     return this.http.delete(`${this.apiUrl}/products/${id}`, { headers: this.getAuthHeaders() });
   }
 
+  // Seller - Product CRUD (scoped by backend ownership)
+  getMyProducts(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/products/my`, { headers: this.getAuthHeaders() });
+  }
+
   // Token management
   getToken(): string {
     return localStorage.getItem('token') || '';
@@ -113,3 +118,4 @@ export class ApiService {
     });
   }
 }
+

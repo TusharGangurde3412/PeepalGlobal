@@ -1,0 +1,162 @@
+.seller-container {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: linear-gradient(180deg, #f5f9fc, #edf4f8);
+
+  .seller-header {
+    margin-bottom: 18px;
+
+    h1 {
+      margin-bottom: 6px;
+      color: #213f64;
+    }
+
+    p {
+      color: #5a6e84;
+    }
+  }
+
+  .panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #d8e3ee;
+    box-shadow: 0 8px 24px rgba(20, 53, 78, 0.09);
+    padding: 20px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .product-form {
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+      margin-bottom: 14px;
+      color: #23435f;
+    }
+
+    label {
+      margin-bottom: 6px;
+      color: #385470;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    input,
+    textarea,
+    select {
+      margin-bottom: 12px;
+      border: 1px solid #cfdeea;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+
+      &:focus {
+        outline: none;
+        border-color: #3b84c0;
+        box-shadow: 0 0 0 3px rgba(59, 132, 192, 0.15);
+      }
+    }
+
+    .check-row {
+      margin-bottom: 14px;
+      color: #33556d;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  .status {
+    margin-bottom: 12px;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    border: 1px solid transparent;
+  }
+
+  .status.success {
+    background: #def3e4;
+    border-color: #c1e6cb;
+    color: #1c6338;
+  }
+
+  .status.error {
+    background: #f8dfe4;
+    border-color: #f1c2cd;
+    color: #7d2230;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-mini {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: #2f8d58;
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background: #e6f1ff;
+    color: #245f9d;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+
+    th,
+    td {
+      border-bottom: 1px solid #e5edf3;
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #32506e;
+      background: #f4f9ff;
+      font-weight: 700;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-mini {
+    padding: 6px 9px;
+    font-size: 0.82rem;
+  }
+
+  .btn-mini.edit {
+    background: #e6f1ff;
+    color: #245f9d;
+  }
+
+  .btn-mini.delete {
+    background: #ffe8ea;
+    color: #9e2738;
+  }
+}
+
+@media (max-width: 1000px) {
+  .seller-container .grid {
+    grid-template-columns: 1fr;
+  }
+}

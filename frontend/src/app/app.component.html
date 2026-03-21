@@ -1,28 +1,46 @@
 <nav class="navbar">
   <div class="container">
     <div class="navbar-brand">
-      <a routerLink="/" class="logo">
-        <span class="logo-badge">
-          <img src="assets/logo.jpeg" alt="Peepal Global Export Import" class="logo-img">
-        </span>
-        <span class="logo-text">
-          <strong>PEEPAL GLOBAL</strong>
-          <small>EXPORT IMPORT</small>
-        </span>
+      <a routerLink="/" class="logo" aria-label="Peepal Export Home">
+        <img src="assets/logo-header.png" alt="Peepal Export" class="logo-full" />
       </a>
     </div>
+
     <ul class="nav-links">
       <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a></li>
       <li><a routerLink="/about" routerLinkActive="active">About Us</a></li>
       <li><a routerLink="/products" routerLinkActive="active">Industries</a></li>
       <li><a routerLink="/contact" routerLinkActive="active">Contact Us</a></li>
-      <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
+      <li><a (click)="goToSeller()">Seller</a></li>
+      <li><a (click)="goToAdmin()">Admin</a></li>
       <li><a routerLink="/quote" routerLinkActive="active" class="btn-quote">Request a Quote</a></li>
-      <li *ngIf="!isLoggedIn"><a routerLink="/login" routerLinkActive="active">Login</a></li>
       <li *ngIf="isLoggedIn"><a (click)="logout()" class="btn-logout">Logout</a></li>
     </ul>
   </div>
 </nav>
+
+<div class="admin-login-modal" *ngIf="showAdminLoginModal">
+  <div class="modal-backdrop" (click)="closeAdminLoginModal()"></div>
+  <div class="modal-card">
+    <button class="close-btn" type="button" (click)="closeAdminLoginModal()">x</button>
+    <h3>{{ loginTarget === 'admin' ? 'Admin Login' : 'Seller Login' }}</h3>
+    <p>Sign in with your {{ loginTarget }} account to continue.</p>
+
+    <div class="error-message" *ngIf="adminLoginError">{{ adminLoginError }}</div>
+
+    <form (ngSubmit)="submitAdminLogin()">
+      <label for="adminEmail">Email</label>
+      <input id="adminEmail" type="email" [(ngModel)]="adminLoginForm.email" name="adminEmail" required />
+
+      <label for="adminPassword">Password</label>
+      <input id="adminPassword" type="password" [(ngModel)]="adminLoginForm.password" name="adminPassword" required />
+
+      <button type="submit" [disabled]="adminLoginSubmitting">
+        {{ adminLoginSubmitting ? 'Signing in...' : (loginTarget === 'admin' ? 'Login to Admin' : 'Login to Seller') }}
+      </button>
+    </form>
+  </div>
+</div>
 
 <router-outlet></router-outlet>
 

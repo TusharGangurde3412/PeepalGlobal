@@ -7,6 +7,8 @@ import { QuoteComponent } from './components/quote/quote.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { adminGuard } from './guards/admin.guard';
 import { LoginComponent } from './components/login/login.component';
+import { SellerComponent } from './components/seller/seller.component';
+import { sellerGuard } from './guards/seller.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,6 +18,7 @@ export const routes: Routes = [
   { path: 'quote', component: QuoteComponent },
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
+  { path: 'seller', component: SellerComponent, canActivate: [sellerGuard] },
   { path: 'inquiry', redirectTo: 'quote' },
   { path: '**', redirectTo: '' }
 ];

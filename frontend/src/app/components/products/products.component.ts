@@ -19,6 +19,13 @@ export class ProductsComponent implements OnInit {
   categories = ['Agriculture', 'Automobiles', 'Textiles', 'Industrial', 'Handicrafts'];
   selectedCategory = '';
   searchTerm = '';
+  private categoryImageMap: Record<string, string> = {
+    Agriculture: 'assets/products/agriculture.svg',
+    Automobiles: 'assets/products/automobiles.svg',
+    Textiles: 'assets/products/textiles.svg',
+    Industrial: 'assets/products/industrial.svg',
+    Handicrafts: 'assets/products/handicrafts.svg'
+  };
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) {}
 
@@ -75,5 +82,21 @@ export class ProductsComponent implements OnInit {
       arr.push(i);
     }
     return arr;
+  }
+
+  getProductImage(product: any): string {
+    const image = String(product?.image || '').trim();
+    if (image) return image;
+    return this.getCategoryFallbackImage(product?.category);
+  }
+
+  onImageError(event: Event, category: string): void {
+    const target = event.target as HTMLImageElement | null;
+    if (!target) return;
+    target.src = this.getCategoryFallbackImage(category);
+  }
+
+  private getCategoryFallbackImage(category: string): string {
+    return this.categoryImageMap[category] || 'assets/products/industrial.svg';
   }
 }

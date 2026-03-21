@@ -7,12 +7,13 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, role } = req.body;
     
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ error: 'User already exists' });
     
-    user = new User({ email, password, firstName, lastName });
+    const safeRole = role === 'seller' ? 'seller' : 'user';
+    user = new User({ email, password, firstName, lastName, role: safeRole });
     await user.save();
     
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });

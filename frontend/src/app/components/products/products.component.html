@@ -33,7 +33,12 @@
 
         <div class="products-grid" *ngIf="!loading && products.length > 0">
           <div class="product-card" *ngFor="let product of products">
-            <img [src]="product.image" [alt]="product.name" class="product-image">
+            <img
+              [src]="getProductImage(product)"
+              [alt]="product.name"
+              class="product-image"
+              (error)="onImageError($event, product.category)"
+            >
             <div class="product-info">
               <h3>{{ product.name }}</h3>
               <p class="category">{{ product.category }}</p>

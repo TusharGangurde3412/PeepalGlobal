@@ -5,20 +5,19 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
 }
 
 .container {
-  max-width: 1200px;
-  // margin: 0 auto;
+  max-width: 1180px;
   padding: 0 20px;
 }
 
 .navbar {
-  background: white;
-  padding: 1rem 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  padding: 10px 0;
+  border-bottom: 1px solid #edf1f5;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -27,150 +26,179 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
   }
 
-  .navbar-brand {
-    .logo {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      color: #2d5016;
-      gap: 14px;
+  .logo {
+    display: inline-flex;
+    align-items: center;
 
-      .logo-badge {
-        width: 62px;
-        height: 62px;
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid #c8dfd0;
-        background: #ffffff;
-        box-shadow:
-          0 8px 20px rgba(10, 40, 27, 0.16),
-          0 0 0 4px rgba(80, 165, 109, 0.14);
-        display: inline-flex;
-        position: relative;
-
-        &::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          background: linear-gradient(155deg, rgba(120, 203, 146, 0.22), transparent 58%);
-          pointer-events: none;
-        }
-
-        .logo-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center 38%;
-          transform: scale(1.04);
-        }
-      }
-
-      .logo-text {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.05;
-
-        strong {
-          font-size: 1.07rem;
-          letter-spacing: 0.06em;
-          color: #173b2a;
-        }
-
-        small {
-          font-size: 0.66rem;
-          letter-spacing: 0.19em;
-          color: #547866;
-          font-weight: 700;
-        }
-      }
-
-      &:hover .logo-badge {
-        box-shadow:
-          0 10px 24px rgba(10, 40, 27, 0.2),
-          0 0 0 5px rgba(80, 165, 109, 0.2);
-      }
+    .logo-full {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
     }
   }
 
   .nav-links {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 24px;
     align-items: center;
 
     a {
       text-decoration: none;
-      color: #333;
-      font-weight: 500;
-      transition: color 0.3s;
+      color: #30465f;
+      font-weight: 600;
+      font-size: 0.94rem;
+      cursor: pointer;
 
       &:hover,
       &.active {
-        color: #4CAF50;
+        color: #3ead50;
       }
 
       &.btn-quote {
-        background: #4CAF50;
-        color: white;
-        padding: 8px 20px;
-        border-radius: 5px;
-        transition: background 0.3s;
-
-        &:hover {
-          background: #45a049;
-          color: white;
-        }
+        background: #49b25a;
+        color: #fff;
+        padding: 9px 16px;
+        border-radius: 9px;
       }
 
       &.btn-logout {
-        background: #e8f2eb;
+        background: #edf6ee;
         color: #22523b;
-        padding: 8px 14px;
-        border-radius: 5px;
-        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 8px;
       }
     }
   }
 }
 
-@media (max-width: 768px) {
-  .navbar {
-    .container {
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
-    }
+@media (max-width: 900px) {
+  .navbar .container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-    .nav-links {
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .navbar-brand .logo {
-      .logo-badge {
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
-      }
-
-      .logo-text strong {
-        font-size: 0.95rem;
-      }
-    }
+  .navbar .nav-links {
+    flex-wrap: wrap;
+    gap: 12px;
   }
 }
 
 .footer {
-  background: #2d5016;
-  color: white;
+  background: #1f3554;
+  color: #fff;
   text-align: center;
   padding: 2rem 0;
-  margin-top: 4rem;
+  margin-top: 2.5rem;
 
   p {
     margin: 0;
+  }
+}
+
+.admin-login-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 26, 22, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border: 1px solid #d8e8de;
+    border-radius: 14px;
+    box-shadow: 0 20px 36px rgba(15, 44, 30, 0.22);
+    padding: 22px;
+
+    h3 {
+      color: #1f4734;
+      margin-bottom: 6px;
+    }
+
+    p {
+      color: #5e786a;
+      margin-bottom: 12px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: none;
+      background: #edf4ef;
+      color: #325645;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      color: #325543;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    input {
+      border: 1px solid #cddfd3;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: inherit;
+      margin-bottom: 4px;
+
+      &:focus {
+        outline: none;
+        border-color: #429a66;
+        box-shadow: 0 0 0 3px rgba(66, 154, 102, 0.15);
+      }
+    }
+
+    button[type='submit'] {
+      margin-top: 6px;
+      border: none;
+      border-radius: 8px;
+      background: #2f8d58;
+      color: #fff;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+
+      &:disabled {
+        opacity: 0.75;
+        cursor: not-allowed;
+      }
+    }
+
+    .error-message {
+      background: #f8dee3;
+      border: 1px solid #f1c2cc;
+      color: #852334;
+      padding: 9px 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
   }
 }

@@ -23,23 +23,31 @@ function authenticate(req, res, next) {
 }
 
 async function requireAdmin(req, res, next) {
-  try {
-    const user = await User.findById(req.userId).select('role');
-    if (!user) {
-      return res.status(401).json({ error: 'Unauthorized: user not found' });
-    }
+  return requireRoles('admin')(req, res, next);
+}
 
-    if (user.role !== 'admin') {
-      return res.status(403).json({ error: 'Forbidden: admin access required' });
-    }
+function requireRoles(...allowedRoles) {
+  return async function roleGuard(req, res, next) {
+    try {
+      const user = await User.findById(req.userId).select('_id role email firstName lastName');
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized: user not found' });
+      }
 
-    return next();
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
+      req.authUser = user;
+      if (!allowedRoles.includes(user.role)) {
+        return res.status(403).json({ error: `Forbidden: requires one of roles [${allowedRoles.join(', ')}]` });
+      }
+
+      return next();
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  };
 }
 
 module.exports = {
   authenticate,
-  requireAdmin
+  requireAdmin,
+  requireRoles
 };

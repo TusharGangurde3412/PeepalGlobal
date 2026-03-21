@@ -1,0 +1,78 @@
+<div class="seller-container">
+  <div class="container">
+    <div class="seller-header">
+      <h1>Seller Dashboard</h1>
+      <p>Add, update, and manage only your own products.</p>
+    </div>
+
+    <div class="status success" *ngIf="success">{{ success }}</div>
+    <div class="status error" *ngIf="error">{{ error }}</div>
+
+    <section class="panel">
+      <div class="grid">
+        <form class="product-form" (ngSubmit)="submitProduct()">
+          <h3>{{ formMode === 'edit' ? 'Edit Product' : 'Add Product' }}</h3>
+
+          <label>Name</label>
+          <input type="text" [(ngModel)]="productForm.name" name="name" required />
+
+          <label>Description</label>
+          <textarea rows="4" [(ngModel)]="productForm.description" name="description"></textarea>
+
+          <label>Category</label>
+          <select [(ngModel)]="productForm.category" name="category" required>
+            <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          </select>
+
+          <label>Price</label>
+          <input type="number" min="0" [(ngModel)]="productForm.price" name="price" />
+
+          <label>Image URL</label>
+          <input type="text" [(ngModel)]="productForm.image" name="image" />
+
+          <div class="check-row">
+            <label><input type="checkbox" [(ngModel)]="productForm.inStock" name="inStock" /> In Stock</label>
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" class="btn-primary" [disabled]="saving">
+              {{ saving ? 'Saving...' : (formMode === 'edit' ? 'Update Product' : 'Add Product') }}
+            </button>
+            <button type="button" class="btn-secondary" (click)="resetForm()" *ngIf="formMode === 'edit'">Cancel Edit</button>
+          </div>
+        </form>
+
+        <div class="products-list">
+          <h3>My Products</h3>
+          <div *ngIf="loadingProducts" class="loading">Loading products...</div>
+          <table *ngIf="!loadingProducts">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>In Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of products">
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.price ? ('$' + product.price) : '-' }}</td>
+                <td>{{ product.inStock ? 'Yes' : 'No' }}</td>
+                <td class="actions">
+                  <button class="btn-mini edit" (click)="editProduct(product)">Edit</button>
+                  <button class="btn-mini delete" (click)="deleteProduct(product._id)">Delete</button>
+                </td>
+              </tr>
+              <tr *ngIf="!products.length">
+                <td colspan="5">No products added yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

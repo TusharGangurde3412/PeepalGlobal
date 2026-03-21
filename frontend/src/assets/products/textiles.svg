@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6dcff"/>
+      <stop offset="1" stop-color="#c5a5e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect x="180" y="230" width="220" height="360" rx="24" fill="#7f61b7"/>
+  <rect x="450" y="190" width="240" height="400" rx="24" fill="#9a7dd2"/>
+  <rect x="740" y="250" width="250" height="340" rx="24" fill="#6f54aa"/>
+  <path d="M180 330h220M180 410h220M180 490h220" stroke="#cdb7ee" stroke-width="8"/>
+  <path d="M450 300h240M450 380h240M450 460h240" stroke="#d8c7f4" stroke-width="8"/>
+  <path d="M740 350h250M740 430h250M740 510h250" stroke="#c4b0e8" stroke-width="8"/>
+  <text x="70" y="120" fill="#4a356e" font-family="Segoe UI, Arial" font-size="62" font-weight="700">Textiles</text>
+  <text x="70" y="182" fill="#664c92" font-family="Segoe UI, Arial" font-size="30">Fabrics, garments and apparel exports</text>
+</svg>

@@ -15,6 +15,11 @@ const productSchema = new mongoose.Schema({
   image: String,
   featured: { type: Boolean, default: false },
   inStock: { type: Boolean, default: true },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
   createdAt: { type: Date, default: Date.now }
 });
 
