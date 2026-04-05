@@ -4,6 +4,21 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 
+
+export interface QuoteForm {
+  productId?: string;
+  productName?: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  quantity: number;
+  destinationCountry: string;
+  incoterm: string;
+  requiredBy: string;
+  message: string;
+}
+
 @Component({
   selector: 'app-quote',
   standalone: true,
@@ -11,9 +26,10 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './quote.component.html',
   styleUrls: ['./quote.component.scss']
 })
+
+
 export class QuoteComponent implements OnInit {
-  quoteForm = {
-    productId: '',
+  quoteForm: QuoteForm = {
     name: '',
     email: '',
     phone: '',
@@ -36,6 +52,15 @@ export class QuoteComponent implements OnInit {
       const productId = params.get('productId') || '';
       if (productId) {
         this.quoteForm.productId = productId;
+        // Fetch product name
+        this.apiService.getProductById(productId).subscribe({
+          next: (product: any) => {
+            this.quoteForm.productName = product?.name || '';
+          },
+          error: () => {
+            this.quoteForm.productName = '';
+          }
+        });
       }
     });
   }
@@ -44,12 +69,18 @@ export class QuoteComponent implements OnInit {
     this.submitting = true;
     this.error = '';
 
-    this.apiService.submitInquiry(this.quoteForm).subscribe({
+    // Only send productId and productName if present
+    const payload = { ...this.quoteForm };
+    if (!payload.productId) delete payload.productId;
+    if (!payload.productName) delete payload.productName;
+
+    this.apiService.submitInquiry(payload).subscribe({
       next: () => {
         this.submitted = true;
         this.submitting = false;
         this.quoteForm = {
           productId: '',
+          productName: '',
           name: '',
           email: '',
           phone: '',

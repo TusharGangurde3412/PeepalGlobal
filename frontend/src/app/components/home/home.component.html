@@ -1,13 +1,41 @@
 <section class="home-hero">
   <div class="container">
-    <div class="hero-panel">
-      <div class="hero-copy">
-        <h1>
-          Your <span class="accent-green">Trusted</span><br>
-          <span class="accent-green">Import Export</span> <span class="accent-blue">Partner</span>
-        </h1>
-        <p>Connecting Businesses Across the Globe</p>
-        <a routerLink="/products" class="btn-primary">Explore Our Services</a>
+    <div class="hero-panel" [style.backgroundImage]="'url(' + getCurrentSlide().image + ')'" [style.--hero-color]="getCurrentSlide().color">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-copy">
+          <h1>
+            Your <span class="accent-green">Trusted</span><br>
+            <span class="accent-green">Import Export</span> <span class="accent-blue">Partner</span>
+          </h1>
+          <p>Connecting Businesses Across the Globe</p>
+          <a routerLink="/products" class="btn-primary">Explore Our Services</a>
+        </div>
+        
+        <div class="slide-info">
+          <p class="slide-product">Featured: {{ getCurrentSlide().title }}</p>
+        </div>
+      </div>
+
+      <!-- Navigation Controls -->
+      <div class="carousel-nav">
+        <button class="nav-btn prev" (click)="previousSlide()" aria-label="Previous slide">
+          &#10094;
+        </button>
+        <button class="nav-btn next" (click)="nextSlide()" aria-label="Next slide">
+          &#10095;
+        </button>
+      </div>
+
+      <!-- Indicators -->
+      <div class="carousel-indicators">
+        <button 
+          *ngFor="let slide of slides; let i = index" 
+          class="indicator"
+          [class.active]="i === currentSlideIndex"
+          (click)="goToSlide(i)"
+          [attr.aria-label]="'Go to slide ' + (i + 1)">
+        </button>
       </div>
     </div>
   </div>
@@ -41,7 +69,8 @@
   <div class="container">
     <div class="about-layout">
       <div class="about-copy">
-        <h2>About <span>Peepal Export</span></h2>
+        <h2>About <span>Peepal Global</span></h2>
+        <h2><span>Import & Export </span></h2>
         <p class="subtitle">Expert Global Trading Solutions</p>
 
         <ul>
@@ -73,7 +102,7 @@
         <h3>Agricultural Products</h3>
       </article>
 
-      <article class="product-card">
+      <!-- <article class="product-card">
         <img src="assets/product-textile.jpg" alt="Textiles and garments">
         <h3>Textiles &amp; Garments</h3>
       </article>
@@ -81,7 +110,7 @@
       <article class="product-card">
         <img src="assets/product-industrial.jpg" alt="Industrial goods">
         <h3>Industrial Goods</h3>
-      </article>
+      </article> -->
     </div>
   </div>
 </section>

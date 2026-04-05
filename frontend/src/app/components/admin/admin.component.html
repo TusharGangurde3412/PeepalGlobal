@@ -33,8 +33,30 @@
           <label>Price</label>
           <input type="number" min="0" [(ngModel)]="productForm.price" name="price" />
 
-          <label>Image URL</label>
-          <input type="text" [(ngModel)]="productForm.image" name="image" />
+
+
+          <label>Product Images</label>
+          <input type="file" accept="image/*" (change)="onImageFileSelected($event)" [disabled]="imageUploadInProgress" multiple />
+          <div *ngIf="imageUploadInProgress" class="upload-status">Uploading image(s)...</div>
+          <div *ngIf="imageUploadError" class="upload-error">{{ imageUploadError }}</div>
+          <div *ngIf="productForm.images.length > 0" class="image-preview-list">
+            <div class="image-thumb" *ngFor="let img of productForm.images; let i = index">
+              <img [src]="img" alt="Product Image Preview" />
+              <button type="button" class="remove-img" (click)="removeImage(i)">&times;</button>
+            </div>
+          </div>
+
+
+
+
+          <label>Specifications</label>
+          <div class="spec-list">
+            <div class="spec-item" *ngFor="let spec of productForm.specs; let i = index; trackBy: trackByIndex">
+              <input type="text" [(ngModel)]="productForm.specs[i]" name="spec-{{i}}" placeholder="Specification" />
+              <button type="button" (click)="removeSpec(i)" [disabled]="productForm.specs.length === 1">Remove</button>
+            </div>
+            <button type="button" (click)="addSpec()">Add Specification</button>
+          </div>
 
           <div class="check-row">
             <label><input type="checkbox" [(ngModel)]="productForm.featured" name="featured" /> Featured</label>

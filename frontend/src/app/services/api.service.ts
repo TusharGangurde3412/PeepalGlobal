@@ -1,3 +1,5 @@
+  // Image upload
+ 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -110,6 +112,16 @@ export class ApiService {
       return null;
     }
   }
+   uploadImage(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.http.post(`${this.apiUrl}/upload`, formData);
+  } 
+  // uploadImage(file: File): Observable<any> {
+  //   const formData = new FormData();
+  //   formData.append('image', file);
+  //   return this.http.post(`${this.apiUrl}/upload`, formData);
+  // }
 
   private getAuthHeaders(): HttpHeaders {
     const token = this.getToken();

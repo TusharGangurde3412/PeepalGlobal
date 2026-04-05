@@ -32,7 +32,7 @@
         </div>
 
         <div class="products-grid" *ngIf="!loading && products.length > 0">
-          <div class="product-card" *ngFor="let product of products">
+          <a class="product-card" *ngFor="let product of products" [routerLink]="['/products', product._id]" tabindex="0" role="link" aria-label="View product details">
             <img
               [src]="getProductImage(product)"
               [alt]="product.name"
@@ -44,13 +44,11 @@
               <p class="category">{{ product.category }}</p>
               <p class="description">{{ product.description }}</p>
               <div class="product-footer">
-                <span class="price" *ngIf="product.price">${{ product.price }}</span>
-                <button class="btn-inquiry" routerLink="/quote" [queryParams]="{ productId: product._id }">
-                  Inquire Now
-                </button>
+                <!-- <span class="price" *ngIf="product.price">${{ product.price }}</span> -->
+                <span class="btn-inquiry">View Details</span>
               </div>
             </div>
-          </div>
+          </a>
         </div>
 
         <div *ngIf="!loading && products.length === 0" class="no-products">

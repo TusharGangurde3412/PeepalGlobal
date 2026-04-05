@@ -1,3 +1,5 @@
+ 
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -27,15 +29,21 @@ export class AdminComponent implements OnInit {
     description: '',
     category: 'Agriculture',
     price: 0,
-    image: '',
+    images: [] as string[],
+    specs: [''],
     featured: false,
-    inStock: true
+    inStock: true,
+    // ...removed brochure property
   };
 
-  categories = ['Agriculture', 'Automobiles', 'Textiles', 'Industrial', 'Handicrafts'];
+  categories = ['Agriculture', 'Automobiles', 'Textiles', 'Industrial', 'Handicrafts', 'Veterinary'];
   formMode: 'create' | 'edit' = 'create';
   success = '';
   error = '';
+
+  imageUploadInProgress = false;
+  imageUploadError = '';
+  imagePreviewUrl: string | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -47,6 +55,9 @@ export class AdminComponent implements OnInit {
 
   setTab(tab: 'products' | 'inquiries' | 'contacts'): void {
     this.activeTab = tab;
+  }
+  trackByIndex(index: number, obj: any): any {
+    return index;
   }
 
   loadProducts(): void {
@@ -97,14 +108,17 @@ export class AdminComponent implements OnInit {
       return;
     }
 
+
     const payload = {
       name: this.productForm.name,
       description: this.productForm.description,
       category: this.productForm.category,
       price: this.productForm.price,
-      image: this.productForm.image,
+      images: this.productForm.images.filter(Boolean),
+      specs: this.productForm.specs.map(s => s.trim()).filter(Boolean),
       featured: this.productForm.featured,
-      inStock: this.productForm.inStock
+      inStock: this.productForm.inStock,
+      // brochure removed
     };
 
     const request$ =
@@ -132,10 +146,13 @@ export class AdminComponent implements OnInit {
       description: product.description || '',
       category: product.category || 'Agriculture',
       price: Number(product.price || 0),
-      image: product.image || '',
+      images: Array.isArray(product.images) ? [...product.images] : (product.image ? [product.image] : []),
+      specs: Array.isArray(product.specs) && product.specs.length ? [...product.specs] : [''],
       featured: Boolean(product.featured),
-      inStock: product.inStock !== false
+      inStock: product.inStock !== false,
+      // brochure removed
     };
+    this.imagePreviewUrl = this.productForm.images[0] || null;
     this.activeTab = 'products';
     this.success = '';
     this.error = '';
@@ -163,9 +180,59 @@ export class AdminComponent implements OnInit {
       description: '',
       category: 'Agriculture',
       price: 0,
-      image: '',
+      images: [],
+      specs: [''],
       featured: false,
-      inStock: true
+      inStock: true,
+      // brochure removed
     };
+    this.imagePreviewUrl = null;
+    this.imageUploadError = '';
+    this.imageUploadInProgress = false;
   }
+
+  onImageFileSelected(event: Event): void {
+    this.imageUploadError = '';
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const files = Array.from(input.files);
+    this.imageUploadInProgress = true;
+    let uploaded = 0;
+    files.forEach((file, idx) => {
+      this.apiService.uploadImage(file).subscribe({
+        next: (res) => {
+          this.productForm.images.push(res.url);
+          if (idx === 0) this.imagePreviewUrl = res.url;
+          uploaded++;
+          if (uploaded === files.length) this.imageUploadInProgress = false;
+        },
+        error: (err) => {
+          this.imageUploadError = err?.error?.error || 'Image upload failed.';
+          uploaded++;
+          if (uploaded === files.length) this.imageUploadInProgress = false;
+        }
+      });
+    });
+  }
+
+  removeImage(idx: number): void {
+    this.productForm.images.splice(idx, 1);
+    if (this.productForm.images.length > 0) {
+      this.imagePreviewUrl = this.productForm.images[0];
+    } else {
+      this.imagePreviewUrl = null;
+    }
+  }
+
+  addSpec(): void {
+    this.productForm.specs.push('');
+  }
+
+  removeSpec(idx: number): void {
+    if (this.productForm.specs.length > 1) {
+      this.productForm.specs.splice(idx, 1);
+    }
+  }
+
+  // onBrochureFileSelected removed
 }

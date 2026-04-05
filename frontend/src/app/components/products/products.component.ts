@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { ProductDetailModalComponent } from './product-detail-modal.component';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ProductDetailModalComponent],
+    
+    
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss']
 })
@@ -16,18 +19,18 @@ export class ProductsComponent implements OnInit {
   page = 1;
   limit = 12;
   total = 0;
-  categories = ['Agriculture', 'Automobiles', 'Textiles', 'Industrial', 'Handicrafts'];
+  categories = ['Agriculture', 'Veterinary'];
   selectedCategory = '';
   searchTerm = '';
   private categoryImageMap: Record<string, string> = {
     Agriculture: 'assets/products/agriculture.svg',
-    Automobiles: 'assets/products/automobiles.svg',
-    Textiles: 'assets/products/textiles.svg',
-    Industrial: 'assets/products/industrial.svg',
-    Handicrafts: 'assets/products/handicrafts.svg'
+    // Veterinary: 'assets/products/veterinary.svg',
+    // Textiles: 'assets/products/textiles.svg',
+    // Industrial: 'assets/products/industrial.svg',
+    // Handicrafts: 'assets/products/handicrafts.svg'
   };
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute) {}
+  constructor(private apiService: ApiService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -84,9 +87,21 @@ export class ProductsComponent implements OnInit {
     return arr;
   }
 
+
   getProductImage(product: any): string {
-    const image = String(product?.image || '').trim();
-    if (image) return image;
+    // Prefer first image from images array if available
+    let image = '';
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      image = String(product.images[0] || '').trim();
+    } else if (product.image) {
+      image = String(product.image).trim();
+    }
+    if (image) {
+      if (image.startsWith('/uploads/')) {
+        return 'http://localhost:5000' + image;
+      }
+      return image;
+    }
     return this.getCategoryFallbackImage(product?.category);
   }
 

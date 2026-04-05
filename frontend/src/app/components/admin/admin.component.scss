@@ -96,6 +96,28 @@
       display: flex;
       gap: 10px;
     }
+
+    .upload-status {
+      color: #2f8d58;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+    .upload-error {
+      color: #c33;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+    .image-preview {
+      margin-bottom: 12px;
+      img {
+        max-width: 100%;
+        max-height: 120px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 8px rgba(60, 150, 99, 0.08);
+        display: block;
+      }
+    }
   }
 
   .products-list h3,

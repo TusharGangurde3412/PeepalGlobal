@@ -86,11 +86,14 @@
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.2s;
+      cursor: pointer;
+      outline: none;
 
-      &:hover {
+      &:hover, &:focus {
         transform: translateY(-5px);
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 5px 20px rgba(73, 178, 90, 0.13);
+        border-color: #49b25a;
       }
 
       .product-image {

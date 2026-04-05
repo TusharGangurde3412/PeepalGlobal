@@ -77,6 +77,43 @@
     }
   }
 
+  .register-link {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #dfe8e2;
+
+    p {
+      margin: 0 0 12px 0;
+      color: #5d7568;
+      font-size: 0.95rem;
+    }
+
+    a {
+      display: inline-block;
+      background: #e8f4ed;
+      color: #2f8d58;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: 2px solid #2f8d58;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: #2f8d58;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(47, 141, 88, 0.2);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
   .back-link {
     display: inline-block;
     margin-top: 14px;

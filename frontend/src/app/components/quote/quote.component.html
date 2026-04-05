@@ -28,13 +28,14 @@
         </div>
 
         <div class="form-group">
-          <label for="productId">Product ID (optional)</label>
+          <label for="productName">Product Name (optional)</label>
           <input
-            id="productId"
+            id="productName"
             type="text"
-            [(ngModel)]="quoteForm.productId"
-            name="productId"
-            placeholder="Auto-filled when requested from product page"
+            [(ngModel)]="quoteForm.productName"
+            name="productName"
+            [readonly]="!!quoteForm.productId"
+            placeholder="Enter product name if not auto-filled"
           />
         </div>
 

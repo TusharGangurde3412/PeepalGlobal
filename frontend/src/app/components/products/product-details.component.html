@@ -1,0 +1,17 @@
+<div class="product-details" *ngIf="!loading && product; else loadingOrError">
+  <div class="images">
+    <img *ngFor="let img of product.images" [src]="img.startsWith('/uploads/') ? 'http://localhost:5000' + img : img" alt="Product image" />
+  </div>
+  <div class="info">
+    <h1>{{ product.name }}</h1>
+    <p class="description">{{ product.description }}</p>
+    <ul class="specs">
+      <li *ngFor="let spec of product.specs">{{ spec }}</li>
+    </ul>
+    <button class="enquire-btn" [routerLink]="['/quote']" [queryParams]="{ productName: product.name }">Enquire</button>
+  </div>
+</div>
+<ng-template #loadingOrError>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error">{{ error }}</div>
+</ng-template>
