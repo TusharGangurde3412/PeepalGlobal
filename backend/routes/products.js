@@ -91,12 +91,21 @@ router.post('/', authenticate, requireRoles('admin', 'seller'), async (req, res)
 
     const isAdmin = req.authUser?.role === 'admin';
 
+
+    const images = Array.isArray(req.body.images)
+      ? req.body.images.map((img) => String(img).trim()).filter(Boolean)
+      : req.body.image ? [String(req.body.image).trim()] : [];
+    const specs = Array.isArray(req.body.specs)
+      ? req.body.specs.map((s) => String(s).trim()).filter(Boolean)
+      : [];
+
     const product = new Product({
       name: String(name).trim(),
       description: req.body.description ? String(req.body.description).trim() : '',
       category: String(category).trim(),
       price: Number(req.body.price || 0),
-      image: req.body.image ? String(req.body.image).trim() : '',
+      images,
+      specs,
       featured: isAdmin ? Boolean(req.body.featured) : false,
       inStock: req.body.inStock !== false,
       owner: isAdmin && req.body.owner ? req.body.owner : req.userId
@@ -121,12 +130,18 @@ router.put('/:id', authenticate, requireRoles('admin', 'seller'), async (req, re
     }
 
     const isAdmin = user?.role === 'admin';
+
     const updates = {
       name: req.body.name ? String(req.body.name).trim() : undefined,
       description: req.body.description !== undefined ? String(req.body.description).trim() : undefined,
       category: req.body.category ? String(req.body.category).trim() : undefined,
       price: req.body.price !== undefined ? Number(req.body.price) : undefined,
-      image: req.body.image !== undefined ? String(req.body.image).trim() : undefined,
+      images: Array.isArray(req.body.images)
+        ? req.body.images.map((img) => String(img).trim()).filter(Boolean)
+        : req.body.image !== undefined ? [String(req.body.image).trim()] : undefined,
+      specs: Array.isArray(req.body.specs)
+        ? req.body.specs.map((s) => String(s).trim()).filter(Boolean)
+        : undefined,
       featured: req.body.featured !== undefined ? (isAdmin ? Boolean(req.body.featured) : existing.featured) : undefined,
       inStock: req.body.inStock !== undefined ? Boolean(req.body.inStock) : undefined
     };

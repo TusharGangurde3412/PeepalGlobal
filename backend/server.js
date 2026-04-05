@@ -37,12 +37,18 @@ mongoose.connect(process.env.MONGODB_URI, {
 .catch(err => console.log('MongoDB connection error:', err));
 
 // Routes
+
+// Serve uploaded images as static files
+app.use('/uploads', express.static(require('path').join(__dirname, 'public/uploads')));
+
+// API routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/contacts', require('./routes/contacts'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/upload', require('./routes/upload'));
 
 // Health check
 app.get('/api/health', (req, res) => {

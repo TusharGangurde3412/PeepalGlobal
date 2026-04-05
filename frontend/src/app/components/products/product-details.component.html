@@ -1,6 +1,6 @@
 <div class="product-details" *ngIf="!loading && product; else loadingOrError">
   <div class="images">
-    <img *ngFor="let img of product.images" [src]="img.startsWith('/uploads/') ? 'http://localhost:5000' + img : img" alt="Product image" />
+    <img *ngFor="let img of product.images" [src]="getProductImage(img)" alt="Product image" />
   </div>
   <div class="info">
     <h1>{{ product.name }}</h1>

@@ -8,6 +8,10 @@ dist/
 frontend/dist/
 coverage/
 
+# Angular cache
+.angular/
+frontend/.angular/
+
 # Environment and secrets
 .env
 .env.*
@@ -15,17 +19,25 @@ coverage/
 backend/.env
 frontend/.env
 
+# Angular environments (uncomment if you want to keep local secrets out of git)
+# frontend/src/environments/environment.ts
+
 # Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+logs/
+
 # OS / editor
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+
+# Swap files
+*.swp
 
 # Angular cache
 .angular/

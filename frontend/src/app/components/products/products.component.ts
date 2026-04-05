@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { environment } from '../../../environments/environment';
 import { ProductDetailModalComponent } from './product-detail-modal.component';
 
 @Component({
@@ -98,7 +99,7 @@ export class ProductsComponent implements OnInit {
     }
     if (image) {
       if (image.startsWith('/uploads/')) {
-        return 'http://localhost:5000' + image;
+        return environment.imageBaseUrl + image;
       }
       return image;
     }

@@ -1,0 +1,36 @@
+name: Deploy to Netlify and Render
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy frontend to Netlify
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            ${{ secrets.NETLIFY_BUILD_HOOK }}
+        env:
+          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+
+      - name: Deploy backend to Render
+        run: |
+          curl -X POST \
+            ${{ secrets.RENDER_DEPLOY_HOOK }}
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      - name: Wait for deployments
+        run: sleep 10
+
+      - name: Deployment success notification
+        run: echo "✓ Deployment triggered successfully for both services"

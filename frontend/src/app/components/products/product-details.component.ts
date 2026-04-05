@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-product-details',
@@ -34,5 +35,12 @@ export class ProductDetailsComponent implements OnInit {
       this.error = 'No product specified.';
       this.loading = false;
     }
+  }
+
+  getProductImage(img: string): string {
+    if (img && img.startsWith('/uploads/')) {
+      return environment.imageBaseUrl + img;
+    }
+    return img;
   }
 }
