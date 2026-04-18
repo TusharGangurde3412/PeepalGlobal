@@ -28,15 +28,11 @@
         </div>
 
         <div class="form-group">
-          <label for="productName">Product Name (optional)</label>
-          <input
-            id="productName"
-            type="text"
-            [(ngModel)]="quoteForm.productName"
-            name="productName"
-            [readonly]="!!quoteForm.productId"
-            placeholder="Enter product name if not auto-filled"
-          />
+          <label for="productName">Product</label>
+          <select id="productName" [(ngModel)]="quoteForm.productId" name="productId" (change)="onProductChange($event)">
+            <option value="">Select a product</option>
+            <option *ngFor="let product of products" [ngValue]="product._id">{{ product.name }}</option>
+          </select>
         </div>
 
         <div class="form-row">
@@ -57,7 +53,13 @@
           </div>
           <div class="form-group">
             <label for="phone">Phone</label>
-            <input id="phone" type="tel" [(ngModel)]="quoteForm.phone" name="phone" required />
+            <div class="phone-input-group">
+              <select [(ngModel)]="selectedPhoneCountry" name="phoneCountry" (change)="onPhoneCountryChange($event)">
+                <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }} ({{ country.dial_code }})</option>
+              </select>
+              <input class="country-code" [value]="selectedPhoneCountry?.dial_code" readonly style="width: 60px;" />
+              <input id="phone" type="tel" [(ngModel)]="quoteForm.phone" name="phone" required style="width: calc(100% - 70px);" placeholder="Enter mobile number" />
+            </div>
           </div>
         </div>
 
@@ -68,13 +70,10 @@
           </div>
           <div class="form-group">
             <label for="destinationCountry">Destination Country</label>
-            <input
-              id="destinationCountry"
-              type="text"
-              [(ngModel)]="quoteForm.destinationCountry"
-              name="destinationCountry"
-              required
-            />
+            <select id="destinationCountry" [(ngModel)]="quoteForm.destinationCountry" name="destinationCountry" required>
+              <option value="">Select country</option>
+              <option *ngFor="let country of countries" [value]="country.name">{{ country.name }}</option>
+            </select>
           </div>
         </div>
 
@@ -92,6 +91,23 @@
             <label for="requiredBy">Required By (optional)</label>
             <input id="requiredBy" type="date" [(ngModel)]="quoteForm.requiredBy" name="requiredBy" />
           </div>
+        </div>
+
+
+        <div class="form-group">
+          <label for="paymentMode">Payment Mode</label>
+          <select id="paymentMode" [(ngModel)]="quoteForm.paymentMode" name="paymentMode" required>
+            <option value="">Select payment mode</option>
+            <option value="Advance">Advance</option>
+            <option value="RTGS">RTGS</option>
+            <option value="LC">Letter of Credit (LC)</option>
+            <option value="TT">Telegraphic Transfer (TT)</option>
+            <option value="Other">Other</option>
+            <option value="D/P">Documents against Payment (D/P)</option>
+            <option value="D/A">Documents against Acceptance (D/A)</option>
+            <option value="Open Account">Open Account</option>
+
+          </select>
         </div>
 
         <div class="form-group">

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import countriesData from '../../../assets/countries.json';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +17,7 @@ export interface QuoteForm {
   destinationCountry: string;
   incoterm: string;
   requiredBy: string;
+  paymentMode?: string;
   message: string;
 }
 
@@ -30,6 +32,7 @@ export interface QuoteForm {
 
 export class QuoteComponent implements OnInit {
   quoteForm: QuoteForm = {
+    productId: '',
     name: '',
     email: '',
     phone: '',
@@ -38,31 +41,57 @@ export class QuoteComponent implements OnInit {
     destinationCountry: '',
     incoterm: 'FOB',
     requiredBy: '',
+    paymentMode: '',
     message: ''
   };
 
+  countries: { name: string; dial_code: string }[] = [];
+  selectedPhoneCountry: { name: string; dial_code: string } | null = null;
+  products: any[] = [];
   submitted = false;
   submitting = false;
   error = '';
+  selectedProductId: string = '';
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.route.queryParamMap.subscribe(params => {
-      const productId = params.get('productId') || '';
-      if (productId) {
-        this.quoteForm.productId = productId;
-        // Fetch product name
-        this.apiService.getProductById(productId).subscribe({
-          next: (product: any) => {
-            this.quoteForm.productName = product?.name || '';
-          },
-          error: () => {
-            this.quoteForm.productName = '';
+    // Load countries
+    this.countries = (countriesData as any[]);
+    this.selectedPhoneCountry = this.countries.find(c => c.name === 'India') || this.countries[0];
+
+    // Get product name from query params
+    const productName = this.route.snapshot.queryParamMap.get('productName') || '';
+
+    // Load all products for dropdown
+    this.apiService.getProducts(1, 1000).subscribe({
+      next: (data) => {
+        this.products = data.products || [];
+        // Auto-select product if productName was in query params
+        if (productName) {
+          const found = this.products.find(p => p.name === productName);
+          if (found) {
+            this.quoteForm.productId = found._id;
+            this.quoteForm.productName = found.name;
+            this.selectedProductId = found._id;
           }
-        });
+        }
+      },
+      error: () => {
+        this.products = [];
       }
     });
+  }
+
+  onProductChange(event: any): void {
+    const selectedId = event.target.value;
+    this.quoteForm.productId = selectedId;
+    const found = this.products.find(p => p._id === selectedId);
+    this.quoteForm.productName = found ? found.name : '';
+  }
+
+  onPhoneCountryChange(event: any): void {
+    // No-op, handled by ngModel
   }
 
   submitQuote(): void {

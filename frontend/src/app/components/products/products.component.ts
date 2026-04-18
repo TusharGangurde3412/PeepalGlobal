@@ -25,11 +25,15 @@ export class ProductsComponent implements OnInit {
   searchTerm = '';
   private categoryImageMap: Record<string, string> = {
     Agriculture: 'assets/products/agriculture.svg',
-    // Veterinary: 'assets/products/veterinary.svg',
-    // Textiles: 'assets/products/textiles.svg',
-    // Industrial: 'assets/products/industrial.svg',
-    // Handicrafts: 'assets/products/handicrafts.svg'
+    Veterinary: 'assets/products/veterinary.svg',
+    Textiles: 'assets/products/textiles.svg',
+    Industrial: 'assets/products/industrial.svg',
+    Handicrafts: 'assets/products/handicrafts.svg'
   };
+
+  getCategoryIcon(category: string): string {
+    return this.categoryImageMap[category] || 'assets/products/industrial.svg';
+  }
 
   constructor(private apiService: ApiService, private route: ActivatedRoute, private router: Router) {}
 
