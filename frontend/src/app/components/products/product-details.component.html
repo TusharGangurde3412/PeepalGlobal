@@ -1,14 +1,68 @@
 <div class="product-details" *ngIf="!loading && product; else loadingOrError">
-  <div class="images">
-    <img *ngFor="let img of product.images" [src]="getProductImage(img)" alt="Product image" />
+  <div class="product-main">
+    <!-- Main Image -->
+   
+
+    <!-- Product Info -->
+    <div class="info">
+      <h1>{{ product.name }}</h1>
+      <p class="description">{{ product.description }}</p>
+      
+      <div class="specs-section" *ngIf="product.specs && product.specs.length > 0">
+        <h3>Specifications:</h3>
+        <ul class="specs">
+          <li *ngFor="let spec of product.specs">{{ spec }}</li>
+        </ul>
+      </div>
+
+      <button class="enquire-btn" [routerLink]="['/quote']" [queryParams]="{ productName: product.name }">Request a Quote</button>
+    </div>
   </div>
-  <div class="info">
-    <h1>{{ product.name }}</h1>
-    <p class="description">{{ product.description }}</p>
-    <ul class="specs">
-      <li *ngFor="let spec of product.specs">{{ spec }}</li>
-    </ul>
-    <button class="enquire-btn" [routerLink]="['/quote']" [queryParams]="{ productName: product.name }">Enquire</button>
+   <div class="main-image-section">
+      <div class="main-image-wrapper">
+        <img 
+          [src]="getProductImage(product.images[0])" 
+          alt="{{ product.name }}"
+          class="main-image"
+        />
+      </div>
+      <button *ngIf="product.images && product.images.length > 1" class="gallery-btn" (click)="openGallery()">
+        <span>📸 View All Photos</span>
+      </button>
+    </div>
+
+  <!-- Photo Gallery Modal -->
+  <div class="gallery-modal" *ngIf="showGallery" [@fadeInOut]>
+    <div class="gallery-backdrop" (click)="closeGallery()"></div>
+    <div class="gallery-content">
+      <button class="close-btn" (click)="closeGallery()">✕</button>
+      
+      <!-- Main Gallery Image -->
+      <div class="gallery-main">
+        <img 
+          [src]="getProductImage(product.images[currentImageIndex])" 
+          [alt]="product.name"
+          class="gallery-image"
+        />
+        <div class="image-counter">{{ currentImageIndex + 1 }} / {{ product.images.length }}</div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <button class="nav-btn prev-btn" (click)="previousImage()" *ngIf="product.images.length > 1">❮</button>
+      <button class="nav-btn next-btn" (click)="nextImage()" *ngIf="product.images.length > 1">❯</button>
+
+      <!-- Thumbnails -->
+      <div class="thumbnails" *ngIf="product.images && product.images.length > 1">
+        <img 
+          *ngFor="let img of product.images; let i = index"
+          [src]="getProductImage(img)"
+          [class.active]="i === currentImageIndex"
+          (click)="goToImage(i)"
+          class="thumbnail"
+          [alt]="product.name + ' ' + (i + 1)"
+        />
+      </div>
+    </div>
   </div>
 </div>
 <ng-template #loadingOrError>

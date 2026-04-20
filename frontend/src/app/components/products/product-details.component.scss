@@ -1,58 +1,324 @@
 .product-details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 2rem;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
 
-  .images {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+  .product-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
     margin-bottom: 2rem;
-    display: block;
-    img {
-      width: 60vw;
-      max-width: 600px;
-      min-width: 240px;
-      height: auto;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .main-image-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .main-image-wrapper {
+      width: 100%;
+      height: 400px;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      object-fit: contain;
-      display: block;
-      margin: 0 auto;
-      padding-left: env(safe-area-inset-left, 0px);
-      padding-right: env(safe-area-inset-right, 0px);
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+
+      .main-image {
+        width: 70%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .gallery-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
     }
   }
 
   .info {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
     h1 {
-      font-size: 2rem;
+      font-size: 2.2rem;
       margin-bottom: 1rem;
+      color: #1a3d2e;
     }
+
     .description {
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
-      color: #444;
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+      color: #555;
+      line-height: 1.6;
     }
-    .specs {
-      list-style: disc inside;
+
+    .specs-section {
       margin-bottom: 2rem;
-      color: #222;
+
+      h3 {
+        font-size: 1.1rem;
+        color: #1a3d2e;
+        margin-bottom: 0.8rem;
+        font-weight: 600;
+      }
+
+      .specs {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          padding: 8px 0;
+          padding-left: 24px;
+          color: #555;
+          position: relative;
+
+          &:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+          }
+        }
+      }
     }
+
     .enquire-btn {
       background: #1976d2;
-      color: #fff;
+      color: white;
       border: none;
-      padding: 0.75rem 2rem;
-      border-radius: 4px;
+      padding: 12px 24px;
+      border-radius: 8px;
       font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.3s ease;
+      align-self: flex-start;
+
       &:hover {
-        background: #125ea2;
+        background: #1565c0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  // Gallery Modal
+  .gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .gallery-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      cursor: pointer;
+    }
+
+    .gallery-content {
+      position: relative;
+      z-index: 10;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.4s ease;
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        z-index: 20;
+
+        &:hover {
+          background: white;
+          transform: scale(1.1);
+        }
+      }
+
+      .gallery-main {
+        position: relative;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        min-height: 400px;
+        overflow: hidden;
+
+        .gallery-image {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          animation: zoomIn 0.3s ease;
+
+          @keyframes zoomIn {
+            from {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+        }
+
+        .image-counter {
+          position: absolute;
+          bottom: 15px;
+          left: 15px;
+          background: rgba(0, 0, 0, 0.7);
+          color: white;
+          padding: 8px 12px;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          font-weight: 600;
+        }
+      }
+
+      .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.8);
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        z-index: 15;
+
+        &:hover {
+          background: white;
+          transform: translateY(-50%) scale(1.1);
+        }
+
+        &.prev-btn {
+          left: 15px;
+        }
+
+        &.next-btn {
+          right: 15px;
+        }
+      }
+
+      .thumbnails {
+        display: flex;
+        gap: 8px;
+        padding: 15px;
+        background: white;
+        overflow-x: auto;
+        justify-content: center;
+
+        .thumbnail {
+          width: 70px;
+          height: 70px;
+          object-fit: cover;
+          border-radius: 6px;
+          cursor: pointer;
+          opacity: 0.6;
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+
+          &:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+          }
+
+          &.active {
+            opacity: 1;
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.4);
+          }
+        }
       }
     }
   }
@@ -61,15 +327,36 @@
 @media (max-width: 600px) {
   .product-details {
     padding: 1rem;
-    .images img {
-      max-width: 100px;
-      max-height: 100px;
+
+    .product-main {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
     }
+
+    .main-image-section .main-image-wrapper {
+      height: 300px;
+    }
+
     .info h1 {
-      font-size: 1.3rem;
+      font-size: 1.6rem;
     }
-    .enquire-btn {
-      width: 100%;
+
+    .gallery-modal .gallery-content {
+      max-width: 95vw;
+      max-height: 95vh;
+
+      .gallery-main {
+        min-height: 300px;
+      }
+
+      .thumbnails {
+        gap: 6px;
+
+        .thumbnail {
+          width: 50px;
+          height: 50px;
+        }
+      }
     }
   }
 }
