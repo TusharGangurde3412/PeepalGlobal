@@ -20,6 +20,17 @@ function hasSmtpConfig() {
   );
 }
 
+function parseRecipients(input) {
+  return String(input || '')
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
+}
+
+function hasBrevoApiConfig() {
+  return Boolean(process.env.BREVO_API_KEY && process.env.OWNER_EMAIL);
+}
+
 function getTransporter() {
   if (transporter) return transporter;
 
@@ -125,6 +136,61 @@ async function sendOwnerNotification(type, fields) {
   const subjectPrefix = process.env.NOTIFY_SUBJECT_PREFIX || 'Peepal Export';
   const subject = `[${subjectPrefix}] New ${type}`;
   console.log('[notification:start]', { type, to: process.env.OWNER_EMAIL, subject });
+  const recipients = parseRecipients(process.env.OWNER_EMAIL);
+  const fromEmail = process.env.BREVO_FROM_EMAIL || process.env.SMTP_USER;
+  const fromName = process.env.BREVO_FROM_NAME || 'Peepal Export';
+
+  if (hasBrevoApiConfig()) {
+    try {
+      if (!fromEmail) {
+        return { success: false, reason: 'BREVO_FROM_EMAIL (or SMTP_USER fallback) is missing' };
+      }
+
+      const payload = {
+        sender: { name: fromName, email: fromEmail },
+        to: recipients.map((email) => ({ email })),
+        subject,
+        htmlContent: html,
+        textContent: text
+      };
+
+      if (notificationDebug) {
+        console.log('[notification:brevo:send]', {
+          endpoint: 'https://api.brevo.com/v3/smtp/email',
+          toCount: recipients.length,
+          sender: payload.sender
+        });
+      }
+
+      const resp = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          'api-key': process.env.BREVO_API_KEY
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!resp.ok) {
+        const body = await resp.text();
+        console.error('[notification:brevo:error]', { status: resp.status, body });
+        return { success: false, reason: `Brevo API failed: HTTP ${resp.status}` };
+      }
+
+      const data = await resp.json();
+      const result = { success: true, messageId: data.messageId || data.messageIds || null, provider: 'brevo-api' };
+      console.log('[notification:sent]', result);
+      return result;
+    } catch (err) {
+      console.error('[notification:brevo:error]', {
+        message: err.message,
+        code: err.code,
+        type: err.name
+      });
+      return { success: false, reason: `Brevo API error: ${err.message}` };
+    }
+  }
 
   if (!hasSmtpConfig()) {
     // Keep submission flow successful even when SMTP is not configured.
@@ -185,7 +251,7 @@ async function sendOwnerNotification(type, fields) {
 
     const sendPromise = mailer.sendMail({
       from,
-      to: process.env.OWNER_EMAIL,
+      to: recipients.join(', '),
       subject,
       text,
       html
