@@ -63,6 +63,7 @@ router.post('/', async (req, res) => {
     }
 
     await inquiry.save();
+    console.log('Inquiry saved, triggering notification', { inquiryId: inquiry._id, email: inquiry.email });
 
     sendOwnerNotification('Inquiry / Quote Request', {
       name: inquiry.name,
@@ -76,6 +77,13 @@ router.post('/', async (req, res) => {
       productId: inquiry.productId,
       message: inquiry.message,
       createdAt: inquiry.createdAt
+    }).then((result) => {
+      if (!result || !result.success) {
+        console.error('Inquiry notification failed', {
+          inquiryId: inquiry._id,
+          reason: result?.reason || 'unknown'
+        });
+      }
     }).catch(err => {
       console.error('Inquiry notification error:', err.message);
     });

@@ -17,6 +17,13 @@ router.post('/', async (req, res) => {
       subject: contact.subject,
       message: contact.message,
       createdAt: contact.createdAt
+    }).then((result) => {
+      if (!result || !result.success) {
+        console.error('Contact notification failed', {
+          contactId: contact._id,
+          reason: result?.reason || 'unknown'
+        });
+      }
     }).catch(err => {
       console.error('Contact notification error:', err.message);
     });

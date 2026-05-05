@@ -113,103 +113,99 @@ function buildHtmlTemplate(type, fields) {
 
 async function sendOwnerNotification(type, fields) {
   if (!process.env.OWNER_EMAIL) {
-    if (notificationDebug) {
-      console.warn('[notification:skip] OWNER_EMAIL not configured, skipping notification');
-    }
-    return;
+    console.warn('[notification:skip] OWNER_EMAIL not configured, skipping notification');
+    return { success: false, reason: 'OWNER_EMAIL missing' };
   }
 
   const text = formatFields(fields);
   const html = buildHtmlTemplate(type, fields);
   const subjectPrefix = process.env.NOTIFY_SUBJECT_PREFIX || 'Peepal Export';
   const subject = `[${subjectPrefix}] New ${type}`;
+  console.log('[notification:start]', { type, to: process.env.OWNER_EMAIL, subject });
 
   if (!hasSmtpConfig()) {
     // Keep submission flow successful even when SMTP is not configured.
+    console.warn(`[notification:skip] SMTP config incomplete for ${subject}`);
+    console.log('[notification:config] Required vars:', {
+      SMTP_HOST: Boolean(process.env.SMTP_HOST),
+      SMTP_PORT: Boolean(process.env.SMTP_PORT),
+      SMTP_USER: Boolean(process.env.SMTP_USER),
+      SMTP_PASS: Boolean(process.env.SMTP_PASS),
+      OWNER_EMAIL: Boolean(process.env.OWNER_EMAIL)
+    });
     if (notificationDebug) {
-      console.warn(`[notification:skip] SMTP config incomplete for ${subject}`);
-      console.log('[notification:debug] Required vars:', {
-        SMTP_HOST: Boolean(process.env.SMTP_HOST),
-        SMTP_PORT: Boolean(process.env.SMTP_PORT),
-        SMTP_USER: Boolean(process.env.SMTP_USER),
-        SMTP_PASS: Boolean(process.env.SMTP_PASS),
-        OWNER_EMAIL: Boolean(process.env.OWNER_EMAIL)
-      });
       console.log(`[notification:payload] ${subject}\n${text}`);
     }
-    return;
+    return { success: false, reason: 'SMTP config incomplete' };
   }
 
-  // Send notification asynchronously without blocking the main request
-  setImmediate(async () => {
-    try {
-      const mailer = getTransporter();
-      const from =
-        process.env.SMTP_USER && process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail.com')
-          ? process.env.SMTP_USER
-          : (process.env.SMTP_FROM || process.env.SMTP_USER);
+  try {
+    const mailer = getTransporter();
+    const from =
+      process.env.SMTP_USER && process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail.com')
+        ? process.env.SMTP_USER
+        : (process.env.SMTP_FROM || process.env.SMTP_USER);
 
-      if (!transporterVerified) {
-        try {
-          // Add timeout to verify to prevent hanging
-          const verifyPromise = mailer.verify();
-          const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('SMTP verify timeout after 10s')), 10000)
-          );
-          
-          await Promise.race([verifyPromise, timeoutPromise]);
-          transporterVerified = true;
-          
-          if (notificationDebug) {
-            console.log('[notification:verify] SMTP connection verified successfully');
-          }
-        } catch (verifyErr) {
-          console.error('[notification:verify:error]', {
-            message: verifyErr.message,
-            code: verifyErr.code,
-            response: verifyErr.response
-          });
-          // Don't throw - continue anyway as this shouldn't block the request
-          // Reset on next attempt
-          transporterVerified = false;
-          transporter = null;
-          return;
+    if (!transporterVerified) {
+      try {
+        // Add timeout to verify to prevent hanging
+        const verifyPromise = mailer.verify();
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('SMTP verify timeout after 10s')), 10000)
+        );
+
+        await Promise.race([verifyPromise, timeoutPromise]);
+        transporterVerified = true;
+
+        if (notificationDebug) {
+          console.log('[notification:verify] SMTP connection verified successfully');
         }
-      }
-
-      if (notificationDebug) {
-        console.log('[notification:send] Sending email', {
-          subject,
-          from,
-          to: process.env.OWNER_EMAIL
+      } catch (verifyErr) {
+        console.error('[notification:verify:error]', {
+          message: verifyErr.message,
+          code: verifyErr.code,
+          response: verifyErr.response
         });
+        // Some SMTP providers fail verify in specific environments while send still works.
+        // Continue to send attempt and rely on sendMail result for final status.
+        transporterVerified = false;
       }
-
-      const info = await mailer.sendMail({
-        from,
-        to: process.env.OWNER_EMAIL,
-        subject,
-        text,
-        html
-      });
-
-      if (notificationDebug) {
-        console.log('[notification:sent] Email queued', {
-          messageId: info.messageId,
-          accepted: info.accepted,
-          rejected: info.rejected,
-          response: info.response
-        });
-      }
-    } catch (err) {
-      console.error('[notification:error]', {
-        message: err.message,
-        code: err.code,
-        type: err.name
-      });
-      // Don't throw - this is a non-critical background task
     }
-  });
+
+    if (notificationDebug) {
+      console.log('[notification:send] Sending email', {
+        subject,
+        from,
+        to: process.env.OWNER_EMAIL
+      });
+    }
+
+    const info = await mailer.sendMail({
+      from,
+      to: process.env.OWNER_EMAIL,
+      subject,
+      text,
+      html
+    });
+
+    const result = {
+      success: true,
+      messageId: info.messageId,
+      accepted: info.accepted,
+      rejected: info.rejected,
+      response: info.response
+    };
+
+    console.log('[notification:sent]', result);
+    return result;
+  } catch (err) {
+    console.error('[notification:error]', {
+      message: err.message,
+      code: err.code,
+      type: err.name
+    });
+    return { success: false, reason: err.message };
+  }
 }
 
 module.exports = {
