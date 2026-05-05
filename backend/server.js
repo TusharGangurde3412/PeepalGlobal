@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -38,8 +39,25 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Routes
 
-// Serve uploaded images as static files
-app.use('/uploads', express.static(require('path').join(__dirname, 'public/uploads')));
+// Serve uploaded images as static files (for backward compatibility with old uploads)
+// New uploads are handled via Cloudinary
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+// Serve static files from Angular build (if exists)
+// Check both possible build paths
+const fs = require('fs');
+let frontendBuildPath = path.join(__dirname, '../frontend/dist/frontend/browser');
+try {
+  fs.accessSync(frontendBuildPath);
+  console.log('Using build path:', frontendBuildPath);
+} catch {
+  // Fallback to alternate build path
+  frontendBuildPath = path.join(__dirname, '../frontend/dist/peepal-export-frontend');
+  console.log('Using alternate build path:', frontendBuildPath);
+}
+
+console.log('Frontend build path resolved to:', frontendBuildPath);
+app.use(express.static(frontendBuildPath));
 
 // API routes
 app.use('/api/auth', require('./routes/auth'));
@@ -53,6 +71,15 @@ app.use('/api/upload', require('./routes/upload'));
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'API is running' });
+});
+
+// Serve Angular app for all non-API routes (SPA routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
+    if (err) {
+      res.status(404).json({ error: 'Not found' });
+    }
+  });
 });
 
 const PORT = process.env.PORT || 5000;

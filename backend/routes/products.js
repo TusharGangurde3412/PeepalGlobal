@@ -33,13 +33,16 @@ router.get('/', async (req, res) => {
 
     const filter = {};
     if (category) filter.category = category;
-    if (search) filter.name = { $regex: search, $options: 'i' };
+    if (search) filter.$text = { $search: search };
 
     const skip = (page - 1) * limit;
     const products = await Product.find(filter)
+      .select('name description category price images specs featured inStock createdAt owner')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
+    
     const total = await Product.countDocuments(filter);
 
     res.json({ products, total, page, pages: Math.ceil(total / limit) });
@@ -50,7 +53,10 @@ router.get('/', async (req, res) => {
 
 router.get('/featured', async (req, res) => {
   try {
-    const products = await Product.find({ featured: true }).limit(6);
+    const products = await Product.find({ featured: true })
+      .select('name description category price images specs featured inStock createdAt owner')
+      .limit(6)
+      .lean();
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });

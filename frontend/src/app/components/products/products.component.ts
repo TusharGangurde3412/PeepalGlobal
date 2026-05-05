@@ -9,8 +9,8 @@ import { ProductDetailModalComponent } from './product-detail-modal.component';
   selector: 'app-products',
   standalone: true,
   imports: [CommonModule, RouterLink, ProductDetailModalComponent],
-    
-    
+
+
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss']
 })
@@ -31,11 +31,20 @@ export class ProductsComponent implements OnInit {
     Handicrafts: 'assets/products/handicrafts.svg'
   };
 
+  private categoryListImageMap: Record<string, string> = {
+    Agriculture: 'assets/products/list/agri.jpeg',
+    Veterinary: 'assets/products/list/veterinary.jpeg'
+  };
+
   getCategoryIcon(category: string): string {
     return this.categoryImageMap[category] || 'assets/products/industrial.svg';
   }
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute, private router: Router) {}
+  getCategoryListImage(category: string): string {
+    return this.categoryListImageMap[category] || this.getCategoryIcon(category);
+  }
+
+  constructor(private apiService: ApiService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
