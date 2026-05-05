@@ -25,15 +25,21 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'name, email, phone and quantity are required' });
     }
 
-    const cleanedProductId = productId ? String(productId).trim() : '';
+    // Clean productId - remove any prefix like "1: " or "0: "
+    let cleanedProductId = productId ? String(productId).trim() : '';
+    if (cleanedProductId.includes(':')) {
+      cleanedProductId = cleanedProductId.split(':').pop()?.trim() || '';
+    }
+
     const cleanedUserId = userId ? String(userId).trim() : '';
 
     if (cleanedProductId && !mongoose.Types.ObjectId.isValid(cleanedProductId)) {
-      return res.status(400).json({ error: 'Invalid productId' });
+      console.error('Invalid productId format:', productId, '-> cleaned:', cleanedProductId);
+      return res.status(400).json({ error: 'Invalid productId format' });
     }
 
     if (cleanedUserId && !mongoose.Types.ObjectId.isValid(cleanedUserId)) {
-      return res.status(400).json({ error: 'Invalid userId' });
+      return res.status(400).json({ error: 'Invalid userId format' });
     }
 
     const inquiryData = {

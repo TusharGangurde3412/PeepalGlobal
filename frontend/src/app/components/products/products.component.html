@@ -14,7 +14,7 @@
             </li>
             <li *ngFor="let category of categories">
               <a (click)="onCategoryChange(category)" [class.active]="selectedCategory === category">
-                <img [src]="getCategoryIcon(category)" [alt]="category + ' icon'" class="category-icon" />
+                <img [src]="getCategoryListImage(category)" [alt]="category + ' image'" class="category-icon" />
                 {{ category }}
               </a>
             </li>

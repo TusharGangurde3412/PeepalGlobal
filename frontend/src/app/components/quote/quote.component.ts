@@ -100,7 +100,13 @@ export class QuoteComponent implements OnInit {
 
     // Only send productId and productName if present
     const payload = { ...this.quoteForm };
-    if (!payload.productId) delete payload.productId;
+    
+    // Clean productId - remove any prefix like "1: "
+    if (payload.productId) {
+      payload.productId = String(payload.productId).split(':').pop()?.trim() || '';
+      if (!payload.productId) delete payload.productId;
+    }
+    
     if (!payload.productName) delete payload.productName;
 
     this.apiService.submitInquiry(payload).subscribe({

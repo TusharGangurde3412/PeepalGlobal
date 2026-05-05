@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://peepalglobal-2.onrender.com/api',
-  imageBaseUrl: 'https://peepalglobal-2.onrender.com'
+  apiUrl: 'https://www.peepalglobal.com/api',
+  imageBaseUrl: 'https://www.peepalglobal.com'
 };

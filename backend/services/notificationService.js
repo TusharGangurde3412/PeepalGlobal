@@ -140,54 +140,76 @@ async function sendOwnerNotification(type, fields) {
     return;
   }
 
-  const mailer = getTransporter();
-  // For providers like Gmail, mismatched "from" can be rejected.
-  const from =
-    process.env.SMTP_USER && process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail.com')
-      ? process.env.SMTP_USER
-      : (process.env.SMTP_FROM || process.env.SMTP_USER);
-
-  if (!transporterVerified) {
+  // Send notification asynchronously without blocking the main request
+  setImmediate(async () => {
     try {
-      await mailer.verify();
-      transporterVerified = true;
-      if (notificationDebug) {
-        console.log('[notification:verify] SMTP connection verified successfully');
+      const mailer = getTransporter();
+      const from =
+        process.env.SMTP_USER && process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail.com')
+          ? process.env.SMTP_USER
+          : (process.env.SMTP_FROM || process.env.SMTP_USER);
+
+      if (!transporterVerified) {
+        try {
+          // Add timeout to verify to prevent hanging
+          const verifyPromise = mailer.verify();
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('SMTP verify timeout after 10s')), 10000)
+          );
+          
+          await Promise.race([verifyPromise, timeoutPromise]);
+          transporterVerified = true;
+          
+          if (notificationDebug) {
+            console.log('[notification:verify] SMTP connection verified successfully');
+          }
+        } catch (verifyErr) {
+          console.error('[notification:verify:error]', {
+            message: verifyErr.message,
+            code: verifyErr.code,
+            response: verifyErr.response
+          });
+          // Don't throw - continue anyway as this shouldn't block the request
+          // Reset on next attempt
+          transporterVerified = false;
+          transporter = null;
+          return;
+        }
       }
-    } catch (verifyErr) {
-      console.error('[notification:verify:error]', {
-        message: verifyErr.message,
-        code: verifyErr.code,
-        response: verifyErr.response
+
+      if (notificationDebug) {
+        console.log('[notification:send] Sending email', {
+          subject,
+          from,
+          to: process.env.OWNER_EMAIL
+        });
+      }
+
+      const info = await mailer.sendMail({
+        from,
+        to: process.env.OWNER_EMAIL,
+        subject,
+        text,
+        html
       });
-      throw verifyErr;
+
+      if (notificationDebug) {
+        console.log('[notification:sent] Email queued', {
+          messageId: info.messageId,
+          accepted: info.accepted,
+          rejected: info.rejected,
+          response: info.response
+        });
+      }
+    } catch (err) {
+      console.error('[notification:error]', {
+        message: err.message,
+        code: err.code,
+        type: err.name
+      });
+      // Don't throw - this is a non-critical background task
     }
-  }
-
-  if (notificationDebug) {
-    console.log('[notification:send] Sending email', {
-      subject,
-      from,
-      to: process.env.OWNER_EMAIL
-    });
-  }
-
-  const info = await mailer.sendMail({
-    from,
-    to: process.env.OWNER_EMAIL,
-    subject,
-    text,
-    html
   });
-
-  if (notificationDebug) {
-    console.log('[notification:sent] Email queued', {
-      messageId: info.messageId,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      response: info.response
-    });
-  }
 }
 
 module.exports = {

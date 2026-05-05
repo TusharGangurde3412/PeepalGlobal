@@ -75,6 +75,21 @@
       </div>
     </section>
 
+    <section class="certificates-section">
+      <h2>Our Certifications & Credentials</h2>
+      <p class="section-intro">We are proud to hold these internationally recognized certifications, ensuring compliance and quality in all our operations.</p>
+      <div class="certificates-grid">
+        <div class="certificate-card" *ngFor="let cert of certificates" (click)="viewCertificate(cert)">
+          <div class="cert-icon">
+            <img [src]="cert.icon" [alt]="cert.name" />
+          </div>
+          <h3>{{ cert.name }}</h3>
+          <p>{{ cert.description }}</p>
+          <div class="cert-action">View Certificate</div>
+        </div>
+      </div>
+    </section>
+
     <section class="cta-section">
       <h2>Ready to Do Business With Us?</h2>
       <p>Contact us today to discuss your import or export needs</p>
