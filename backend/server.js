@@ -25,8 +25,6 @@ const corsOptions = {
 };
 
 // Middleware
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 app.use(express.json());
 
 // MongoDB Connection
@@ -44,20 +42,28 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Serve static files from Angular build (if exists)
-// Check both possible build paths
+// Check common Angular output paths and pick the one that contains index.html.
 const fs = require('fs');
-let frontendBuildPath = path.join(__dirname, '../frontend/dist/frontend/browser');
-try {
-  fs.accessSync(frontendBuildPath);
-  console.log('Using build path:', frontendBuildPath);
-} catch {
-  // Fallback to alternate build path
-  frontendBuildPath = path.join(__dirname, '../frontend/dist/peepal-export-frontend');
-  console.log('Using alternate build path:', frontendBuildPath);
-}
+const candidateBuildPaths = [
+  path.join(__dirname, '../frontend/dist/peepal-export-frontend/browser'),
+  path.join(__dirname, '../frontend/dist/peepal-export-frontend'),
+  path.join(__dirname, '../frontend/dist/frontend/browser')
+];
+
+const frontendBuildPath = candidateBuildPaths.find((buildPath) =>
+  fs.existsSync(path.join(buildPath, 'index.html'))
+);
 
 console.log('Frontend build path resolved to:', frontendBuildPath);
-app.use(express.static(frontendBuildPath));
+if (frontendBuildPath) {
+  app.use(express.static(frontendBuildPath));
+} else {
+  console.error('No frontend build found. Checked paths:', candidateBuildPaths);
+}
+
+// Apply CORS only to API routes.
+app.use('/api', cors(corsOptions));
+app.options('/api/*', cors(corsOptions));
 
 // API routes
 app.use('/api/auth', require('./routes/auth'));
@@ -75,6 +81,10 @@ app.get('/api/health', (req, res) => {
 
 // Serve Angular app for all non-API routes (SPA routing)
 app.get('*', (req, res) => {
+  if (!frontendBuildPath) {
+    return res.status(500).json({ error: 'Frontend build not found on server' });
+  }
+
   res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
     if (err) {
       res.status(404).json({ error: 'Not found' });
