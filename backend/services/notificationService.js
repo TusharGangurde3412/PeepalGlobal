@@ -37,6 +37,9 @@ function getTransporter() {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT || 587),
     secure: String(process.env.SMTP_SECURE || 'false') === 'true',
+    connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT_MS || 15000),
+    greetingTimeout: Number(process.env.SMTP_GREETING_TIMEOUT_MS || 15000),
+    socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT_MS || 20000),
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
@@ -180,13 +183,18 @@ async function sendOwnerNotification(type, fields) {
       });
     }
 
-    const info = await mailer.sendMail({
+    const sendPromise = mailer.sendMail({
       from,
       to: process.env.OWNER_EMAIL,
       subject,
       text,
       html
     });
+    const sendTimeoutMs = Number(process.env.SMTP_SEND_TIMEOUT_MS || 20000);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`SMTP send timeout after ${sendTimeoutMs}ms`)), sendTimeoutMs)
+    );
+    const info = await Promise.race([sendPromise, timeoutPromise]);
 
     const result = {
       success: true,
