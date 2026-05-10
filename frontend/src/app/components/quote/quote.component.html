@@ -38,7 +38,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="name">Full Name</label>
-            <input id="name" type="text" [(ngModel)]="quoteForm.name" name="name" required />
+            <input id="name" type="text" [(ngModel)]="quoteForm.name" name="name" required (input)="clearValidationError('name')" />
+            <span class="error-text" *ngIf="validationErrors['name']">{{ validationErrors['name'] }}</span>
           </div>
           <div class="form-group">
             <label for="company">Company</label>
@@ -49,7 +50,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="email">Email</label>
-            <input id="email" type="email" [(ngModel)]="quoteForm.email" name="email" required />
+            <input id="email" type="email" [(ngModel)]="quoteForm.email" name="email" required (input)="clearValidationError('email')" />
+            <span class="error-text" *ngIf="validationErrors['email']">{{ validationErrors['email'] }}</span>
           </div>
           <div class="form-group">
             <label for="phone">Phone</label>
@@ -57,46 +59,53 @@
               <select [(ngModel)]="selectedPhoneCountry" name="phoneCountry" (change)="onPhoneCountryChange($event)">
                 <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }} ({{ country.dial_code }})</option>
               </select>
-              <input class="country-code" [value]="selectedPhoneCountry?.dial_code" readonly style="width: 60px;" />
-              <input id="phone" type="tel" [(ngModel)]="quoteForm.phone" name="phone" required style="width: calc(100% - 70px);" placeholder="Enter mobile number" />
+              <div class="phone-input-wrapper">
+                <input class="country-code" [value]="selectedPhoneCountry?.dial_code" readonly />
+                <input id="phone" type="tel" [(ngModel)]="quoteForm.phone" name="phone" required placeholder="Enter mobile number" (input)="clearValidationError('phone')" />
+              </div>
             </div>
+            <span class="error-text" *ngIf="validationErrors['phone']">{{ validationErrors['phone'] }}</span>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="quantity">Quantity</label>
-            <input id="quantity" type="number" min="1" [(ngModel)]="quoteForm.quantity" name="quantity" required />
+            <label for="quantity">Quantity (in tones)</label>
+            <input id="quantity" type="number" min="1" [(ngModel)]="quoteForm.quantity" name="quantity" required (input)="clearValidationError('quantity')" />
+            <span class="error-text" *ngIf="validationErrors['quantity']">{{ validationErrors['quantity'] }}</span>
           </div>
           <div class="form-group">
             <label for="destinationCountry">Destination Country</label>
-            <select id="destinationCountry" [(ngModel)]="quoteForm.destinationCountry" name="destinationCountry" required>
+            <select id="destinationCountry" [(ngModel)]="quoteForm.destinationCountry" name="destinationCountry" required (change)="clearValidationError('destinationCountry')">
               <option value="">Select country</option>
               <option *ngFor="let country of countries" [value]="country.name">{{ country.name }}</option>
             </select>
+            <span class="error-text" *ngIf="validationErrors['destinationCountry']">{{ validationErrors['destinationCountry'] }}</span>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="incoterm">Shipping Term</label>
-            <select id="incoterm" [(ngModel)]="quoteForm.incoterm" name="incoterm" required>
+            <select id="incoterm" [(ngModel)]="quoteForm.incoterm" name="incoterm" required (change)="clearValidationError('incoterm')">
               <option value="FOB">FOB</option>
               <option value="CIF">CIF</option>
               <option value="EXW">EXW</option>
               <option value="DAP">DAP</option>
             </select>
+            <span class="error-text" *ngIf="validationErrors['incoterm']">{{ validationErrors['incoterm'] }}</span>
           </div>
           <div class="form-group">
             <label for="requiredBy">Required By (optional)</label>
-            <input id="requiredBy" type="date" [(ngModel)]="quoteForm.requiredBy" name="requiredBy" />
+            <input id="requiredBy" type="date" [(ngModel)]="quoteForm.requiredBy" name="requiredBy" (change)="clearValidationError('requiredBy')" />
+            <span class="error-text" *ngIf="validationErrors['requiredBy']">{{ validationErrors['requiredBy'] }}</span>
           </div>
         </div>
 
 
         <div class="form-group">
           <label for="paymentMode">Payment Mode</label>
-          <select id="paymentMode" [(ngModel)]="quoteForm.paymentMode" name="paymentMode" required>
+          <select id="paymentMode" [(ngModel)]="quoteForm.paymentMode" name="paymentMode" required (change)="clearValidationError('paymentMode')">
             <option value="">Select payment mode</option>
             <option value="Advance">Advance</option>
             <option value="RTGS">RTGS</option>
@@ -106,8 +115,8 @@
             <option value="D/P">Documents against Payment (D/P)</option>
             <option value="D/A">Documents against Acceptance (D/A)</option>
             <option value="Open Account">Open Account</option>
-
           </select>
+          <span class="error-text" *ngIf="validationErrors['paymentMode']">{{ validationErrors['paymentMode'] }}</span>
         </div>
 
         <div class="form-group">

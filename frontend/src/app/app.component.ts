@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet, RouterLink, RouterLinkActive, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { ApiService } from './services/api.service';
 import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'Peepal Export';
+  title = 'Peepal Global';
   isLoggedIn = false;
   isAdmin = false;
   isSeller = false;
@@ -26,14 +27,25 @@ export class AppComponent implements OnInit {
     password: ''
   };
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private titleService: Title,
+    private metaService: Meta
+  ) {}
 
   ngOnInit(): void {
     this.refreshAuthState();
 
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => this.refreshAuthState());
+      .subscribe(() => {
+        this.refreshAuthState();
+        this.updateSeoForRoute();
+      });
+
+    this.updateSeoForRoute();
   }
 
   logout(): void {
@@ -127,5 +139,31 @@ export class AppComponent implements OnInit {
         }
       });
     }
+  }
+
+  private updateSeoForRoute(): void {
+    let route = this.activatedRoute.firstChild;
+    while (route?.firstChild) {
+      route = route.firstChild;
+    }
+
+    const data = route?.snapshot?.data || {};
+    const title = data['title'] || 'Peepal Global | Import Export Company in India';
+    const description = data['description'] || 'Peepal Global is an import-export company in Maharashtra, India.';
+    const canonicalUrl = `https://www.peepalglobal.com${this.router.url === '/' ? '/' : this.router.url}`;
+
+    this.titleService.setTitle(title);
+    this.metaService.updateTag({ name: 'description', content: description });
+    this.metaService.updateTag({ property: 'og:title', content: title });
+    this.metaService.updateTag({ property: 'og:description', content: description });
+    this.metaService.updateTag({ property: 'og:url', content: canonicalUrl });
+
+    let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.setAttribute('href', canonicalUrl);
   }
 }

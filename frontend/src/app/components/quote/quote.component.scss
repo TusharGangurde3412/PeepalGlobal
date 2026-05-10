@@ -157,6 +157,71 @@
       resize: vertical;
       min-height: 120px;
     }
+
+    .error-text {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.85rem;
+      color: #c41e3a;
+      font-weight: 500;
+    }
+  }
+
+  .phone-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    select {
+      width: 100%;
+      border: 1px solid #cdded3;
+      border-radius: 8px;
+      padding: 11px 12px;
+      font-size: 0.98rem;
+      font-family: inherit;
+      background: #fbfdfc;
+
+      &:focus {
+        outline: none;
+        border-color: #3f9965;
+        box-shadow: 0 0 0 3px rgba(63, 153, 101, 0.16);
+      }
+    }
+
+    .phone-input-wrapper {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+
+      input {
+        border: 1px solid #cdded3;
+        padding: 11px 12px;
+        font-size: 0.98rem;
+        font-family: inherit;
+        background: #fbfdfc;
+        margin: 0;
+
+        &:focus {
+          outline: none;
+          border-color: #3f9965;
+          box-shadow: 0 0 0 3px rgba(63, 153, 101, 0.16);
+        }
+      }
+
+      input.country-code {
+        flex: 0 0 70px;
+        text-align: center;
+        border-radius: 8px 0 0 8px;
+        border-right: none;
+        padding: 11px 6px;
+      }
+
+      input[type="tel"] {
+        flex: 1;
+        border-radius: 0 8px 8px 0;
+        border-left: none;
+      }
+    }
   }
 
   .btn-submit {

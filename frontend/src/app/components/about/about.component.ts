@@ -13,13 +13,13 @@ export class AboutComponent {
   certificates = [
     {
       name: 'GST Certificate',
-      icon: 'assets/certificate/GST.png',
+      icon: 'assets/certificate/gst.jpeg',
       description: 'Goods and Services Tax Registration',
       type: 'image'
     },
     {
       name: 'IEC Certificate',
-      icon: 'assets/certificate/IEC.jpeg',
+      icon: 'assets/certificate/iec.png',
       description: 'Importer Exporter Code Certificate',
       type: 'image'
     },
