@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Inquiry = require('../models/Inquiry');
+const Product = require('../models/Product');
 const { sendOwnerNotification } = require('../services/notificationService');
 const { authenticate, requireAdmin } = require('../middleware/auth');
 const router = express.Router();
@@ -65,6 +66,17 @@ router.post('/', async (req, res) => {
     await inquiry.save();
     console.log('Inquiry saved, triggering notification', { inquiryId: inquiry._id, email: inquiry.email });
 
+    // Fetch product name if productId exists
+    let productName = '';
+    if (inquiry.productId) {
+      try {
+        const product = await Product.findById(inquiry.productId);
+        productName = product ? product.name : '';
+      } catch (err) {
+        console.error('Error fetching product for notification:', err.message);
+      }
+    }
+
     sendOwnerNotification('Inquiry / Quote Request', {
       name: inquiry.name,
       email: inquiry.email,
@@ -74,7 +86,7 @@ router.post('/', async (req, res) => {
       destinationCountry: inquiry.destinationCountry,
       incoterm: inquiry.incoterm,
       requiredBy: inquiry.requiredBy,
-      productId: inquiry.productId,
+      productName: productName || 'N/A',
       message: inquiry.message,
       createdAt: inquiry.createdAt
     }).then((result) => {

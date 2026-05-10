@@ -103,7 +103,7 @@ function buildHtmlTemplate(type, fields) {
     <div style="margin:0;background:#f2f7f4;padding:24px;font-family:Segoe UI,Arial,sans-serif;">
       <div style="max-width:720px;margin:0 auto;background:#ffffff;border:1px solid #d9e7df;border-radius:12px;overflow:hidden;">
         <div style="background:linear-gradient(120deg,#1f5f42,#319264);padding:18px 22px;">
-          <div style="color:#dff5e8;font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Peepal Export Notification</div>
+          <div style="color:#dff5e8;font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Peepal Global Notification</div>
           <h2 style="margin:6px 0 0;color:#ffffff;font-size:20px;">New ${escapeHtml(type)}</h2>
         </div>
 
@@ -118,7 +118,7 @@ function buildHtmlTemplate(type, fields) {
         </div>
 
         <div style="padding:12px 22px;background:#f8fbf9;border-top:1px solid #e7eee9;color:#678576;font-size:12px;">
-          Sent automatically by Peepal Export backend.
+          Sent automatically by Peepal Global PVT. LTD.
         </div>
       </div>
     </div>
@@ -133,12 +133,12 @@ async function sendOwnerNotification(type, fields) {
 
   const text = formatFields(fields);
   const html = buildHtmlTemplate(type, fields);
-  const subjectPrefix = process.env.NOTIFY_SUBJECT_PREFIX || 'Peepal Export';
+  const subjectPrefix = process.env.NOTIFY_SUBJECT_PREFIX || 'Peepal Global';
   const subject = `[${subjectPrefix}] New ${type}`;
   console.log('[notification:start]', { type, to: process.env.OWNER_EMAIL, subject });
   const recipients = parseRecipients(process.env.OWNER_EMAIL);
   const fromEmail = process.env.BREVO_FROM_EMAIL || process.env.SMTP_USER;
-  const fromName = process.env.BREVO_FROM_NAME || 'Peepal Export';
+  const fromName = process.env.BREVO_FROM_NAME || 'Peepal Global';
 
   if (hasBrevoApiConfig()) {
     try {
